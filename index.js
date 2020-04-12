@@ -40,7 +40,7 @@ client.on('chat', (channel, userstate, message, self) => {
     const parts = message.split(' ');
 
     //Own channel
-    if (channel = 'lmfaobot') {
+    if (channel == 'lmfaobot') {
         if (parts[0] == '!join') {
             client.say(channel, `@${userstate['display-name']}, joining your channel! Happy joking!`);
             console.log(userstate['username']);
