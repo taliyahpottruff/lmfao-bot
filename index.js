@@ -1,6 +1,9 @@
 const https = require('https');
+const fs = require('fs');
 
 require('dotenv').config();
+
+var channelObj = JSON.parse(fs.readFileSync("./channels.json", "utf8"));
 
 const tmi = require('tmi.js');
 const client = new tmi.Client({
@@ -13,7 +16,7 @@ const client = new tmi.Client({
 		username: 'lmfaobot',
 		password: process.env.TOKEN
 	},
-	channels: [ 'piper_pottruff', 'tbkdasenator' ]
+	channels: channelObj.channels
 });
 client.connect();
 
@@ -36,6 +39,20 @@ client.on('chat', (channel, userstate, message, self) => {
     
     const parts = message.split(' ');
 
+    //Own channel
+    if (channel = 'lmfaobot') {
+        if (parts[0] == '!join') {
+            client.say(channel, `@${userstate['display-name']}, joining your channel! Happy joking!`);
+            console.log(userstate['username']);
+            client.join(userstate['username']);
+            channelObj.channels.push(userstate['username']);
+            fs.writeFile('./channels.json', JSON.stringify(channelObj), (err) => {
+                if (err) throw err;
+            });
+        }
+    }
+
+    //Commands
     if (parts[0] == '!joke') {
         console.log("Joke chosen");
 
