@@ -40,15 +40,21 @@ client.on('chat', (channel, userstate, message, self) => {
     const parts = message.split(' ');
 
     //Own channel
-    if (channel == 'lmfaobot') {
+    if (channel == '#lmfaobot') {
         if (parts[0] == '!join') {
-            client.say(channel, `@${userstate['display-name']}, joining your channel! Happy joking!`);
-            console.log(userstate['username']);
-            client.join(userstate['username']);
-            channelObj.channels.push(userstate['username']);
-            fs.writeFile('./channels.json', JSON.stringify(channelObj), (err) => {
-                if (err) throw err;
-            });
+            let c = channelObj.channels.find((channel) => channel == userstate['username']);
+            console.log(c);
+            if (!c) {
+                client.say(channel, `@${userstate['display-name']}, joining your channel! Happy joking!`);
+                console.log(userstate['username']);
+                client.join(userstate['username']);
+                channelObj.channels.push(userstate['username']);
+                fs.writeFile('./channels.json', JSON.stringify(channelObj), (err) => {
+                    if (err) throw err;
+                });
+            } else {
+                client.say(channel, `@${userstate['display-name']}, I'm already in your channel... FeelsBadMan`);
+            }
         }
     }
 
